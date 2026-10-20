@@ -122,6 +122,6 @@ Instantánea de publicación del 20 de octubre de 2026. La respuesta HTTP acredi
 | OTP SMS | Desactivado por defecto; pendiente de proveedor y verificación. |
 | Prueba de usuarios y reservas | Pendiente; sin comprobación de alta, reserva, invitación ni concurrencia en el entorno publicado. |
 | Verificación visual | Portada de escritorio y catálogo público de campos revisados en Chrome; viewport móvil de 375 × 667 comprobado. [Evidencia y límites](qa/2026-10-20.md). Los formularios de usuarios y reservas con datos reales siguen pendientes. |
-| Checks locales | `npm run build` y `git diff --check` correctos; `npm audit` sin vulnerabilidades conocidas. |
+| Compilación y checks | Compilación inicial local correcta; cambios de `13dc6d9` compilados por Vercel y publicados en estado `READY`. `git diff --check` correcto; última auditoría de dependencias sin vulnerabilidades conocidas. La repetición local del build quedó detenida por Storage Guard. |
 
 El propietario ha indicado que configurará SMTP y las URL de autenticación en Supabase. Esa intención no acredita que ya estén configurados ni que se haya entregado un correo real. Mantener pendiente la aceptación de los recorridos de usuario hasta comprobarlos.
