@@ -111,14 +111,14 @@ Instantánea de publicación del 20 de octubre de 2026. La respuesta HTTP acredi
 | Repositorio GitHub | [alvarovillalbaa/kickoff](https://github.com/alvarovillalbaa/kickoff), público; ID `1426175803`; rama `main`. |
 | Equipo y proyecto Vercel | Clous Team / `kickoff-football`; ID `prj_Of9uoX3b8Hb7iGa1gRpLjAimyAPi`. |
 | URL de producción | [kickoff-football-seven.vercel.app](https://kickoff-football-seven.vercel.app); despliegue `READY`; petición HEAD sin autenticación devuelve HTTP 200. |
-| Versión funcional verificada | `e7abb55efea8f5b619ff91544024afbc053b092f`, publicada en `main`; despliegue de producción `dpl_J2vqBDtrbFczEJ2grPPZyfD7op5J` en estado `READY`. Los cambios posteriores de documentación pueden producir nuevos commits y despliegues. |
+| Versión funcional verificada | `13dc6d9743989f50e6a22c0a58335fa3b9dfb689`, publicada en `main`; despliegue de producción `dpl_9nviJ9J1Tv2LPihi77ai7wRCxErj` en estado `READY`. Incluye las correcciones de foco y pases de invitado descritas en [la revisión de interfaz](qa/2026-10-20.md). Los cambios posteriores de documentación pueden producir nuevos commits y despliegues. |
 | Proyecto Supabase | Kickoff / `lucbdtdsofnybynjpdbp`; organización Clous; región `eu-central-1`; creación autorizada con coste cotizado de 0 USD/mes. |
 | Instalación de esquema | `supabase/schema.sql` ejecutado correctamente mediante `execute_sql`; transacción completada. SHA-256 del esquema instalado: `83c6a716f3c6f69173d41c3e8673b7552b6d118ec24c191b5b3946e986345da1`. |
 | Catálogo de datos | `public.browse()` consultado por REST anónimo con la clave publicable real; `centers`, `fields`, `slots` y `matches` devuelven `[]`. |
 | Permisos de datos | RLS habilitado en las 6 tablas; ningún permiso de tabla privada para `anon`, `authenticated` o `PUBLIC`. Avisos de seguridad: 3 informativos por RLS sin políticas en tablas privadas accesibles solo por RPC. |
-| Configuración pública | Conexión pública incluida en el bundle publicado; utiliza únicamente URL y clave publicable. El JavaScript servido coincide byte a byte con el build local: SHA-256 `aa903054376c4b2a2828fd4ffee37676ce83ee1c92edb46d2495516441400fdb`. |
-| Supabase Auth | Correo habilitado y altas permitidas; confirmación de correo obligatoria; proveedor telefónico desactivado. Site URL y Redirect URLs pendientes de configurar en el panel. |
-| Correo SMTP | Pendiente de configurar y verificar entrega. |
+| Configuración pública | Conexión pública incluida en el bundle publicado; utiliza únicamente URL y clave publicable. En la versión `e7abb55`, el JavaScript servido coincidió byte a byte con el build local: SHA-256 `aa903054376c4b2a2828fd4ffee37676ce83ee1c92edb46d2495516441400fdb`. Ese hash corresponde a aquella versión, no a las correcciones posteriores. |
+| Supabase Auth | Correo habilitado y altas permitidas; confirmación de correo obligatoria; proveedor telefónico desactivado. Configuración de Site URL y Redirect URLs pendiente de verificar en el panel. |
+| Correo SMTP | El propietario indicó que lo configurará; configuración y entrega pendientes de verificar. |
 | OTP SMS | Desactivado por defecto; pendiente de proveedor y verificación. |
 | Prueba de usuarios y reservas | Pendiente; sin comprobación de alta, reserva, invitación ni concurrencia en el entorno publicado. |
 | Verificación visual | Portada de escritorio y catálogo público de campos revisados en Chrome; viewport móvil de 375 × 667 comprobado. [Evidencia y límites](qa/2026-10-20.md). Los formularios de usuarios y reservas con datos reales siguen pendientes. |

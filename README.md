@@ -4,7 +4,7 @@ Una aplicación en español para encontrar partidos con plazas libres, reservar 
 
 React y Vite sirven la interfaz. Supabase proporciona autenticación y Postgres; las políticas RLS y las funciones de base de datos controlan propietarios, reservas, aforo e invitaciones. El catálogo comienza vacío: los centros, pistas, horarios y partidos se añaden con datos reales desde la aplicación.
 
-El código está publicado en [GitHub](https://github.com/alvarovillalbaa/kickoff) y la interfaz en [kickoff-football-seven.vercel.app](https://kickoff-football-seven.vercel.app). Supabase tiene el esquema instalado y su catálogo anónimo devuelve las cuatro colecciones vacías. La incorporación de la configuración pública al despliegue está pendiente de publicación: todavía no se acredita una reserva real, la entrega de correo ni el OTP telefónico. Consulta el estado detallado en [el registro de publicación](docs/operations.md#registro-de-publicación).
+El código está publicado en [GitHub](https://github.com/alvarovillalbaa/kickoff) y la interfaz en [kickoff-football-seven.vercel.app](https://kickoff-football-seven.vercel.app), con la conexión pública a Supabase incorporada. Supabase tiene el esquema instalado y su catálogo anónimo devuelve las cuatro colecciones vacías. Quedan por comprobar la configuración de correo y los recorridos de registro, reserva e invitación con una cuenta real confirmada. El OTP telefónico es opcional y permanece desactivado. Consulta el estado detallado en [el registro de publicación](docs/operations.md#registro-de-publicación).
 
 ## Arranque local
 
