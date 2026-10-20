@@ -4,6 +4,8 @@
 
 La aplicación es una SPA de React compilada con Vite. El navegador usa la URL y clave publicable de Supabase; Supabase Auth administra las identidades y sesiones. Postgres es la fuente de verdad de centros, pistas, disponibilidad, partidos y participantes.
 
+`src/config.public.ts` contiene la URL y clave publicable del proyecto de producción. Las variables `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` sustituyen esos valores al compilar. Configura ambas con un proyecto de desarrollo separado antes de realizar cambios locales; dejarlas vacías conecta con producción. Este archivo contiene únicamente configuración destinada al navegador, nunca una clave secreta o `service_role`.
+
 Las políticas RLS y las funciones RPC deben aplicarse antes de habilitar reservas. La validación de la interfaz ayuda al usuario, pero la autorización, el aforo y la exclusión de reservas concurrentes se resuelven en la base de datos. No desactives RLS ni añadas una clave privilegiada al navegador para corregir errores de acceso.
 
 El proyecto empieza sin centros, pistas, usuarios o partidos precargados. Las ilustraciones de la interfaz no representan inventario disponible. Los importes se guardan en céntimos y se muestran en euros; registrar una reserva no acredita un cobro.
@@ -14,7 +16,7 @@ El proyecto empieza sin centros, pistas, usuarios o partidos precargados. Las il
 2. Crea un proyecto dedicado o utiliza uno nuevo destinado a Kickoff. No reutilices la base de datos de otra aplicación.
 3. Lee `supabase/schema.sql` y ejecútalo completo en el editor SQL del proyecto con autorización administrativa. Es una instalación inicial, no un script para ejecutar repetidamente sobre una instalación existente. No contiene semillas de datos.
 4. Comprueba que las tablas, restricciones, políticas y RPC se han creado y revisa los avisos de seguridad de Supabase. Corregir un error de permisos requiere revisar la política o el contrato correspondiente.
-5. Obtén la URL del proyecto y su clave publicable. Configura `.env.local` para desarrollo y las mismas variables en el entorno Vercel correspondiente.
+5. Obtén la URL del proyecto y su clave publicable. Configura las dos variables de conexión en `.env.local` para un proyecto de desarrollo separado. En producción, usa las variables del entorno Vercel cuando estén disponibles o actualiza la configuración pública revisada y vuelve a compilar.
 
 Las RPC de catálogo y detalle son `browse` y `get_match`. Las operaciones de partido son `book_match`, `join_match`, `leave_match` y `cancel_match`; `my_matches` consulta la actividad del usuario. Las invitaciones se obtienen mediante `get_invite_code`, y los pases de invitado se gestionan con `join_guest`, `leave_guest` y `claim_guest`.
 
@@ -48,15 +50,19 @@ La aplicación solicita el OTP a Supabase y verifica el código recibido antes d
 
 Solo el organizador obtiene el código de invitación del partido. El código es una capacidad de acceso: quien recibe el enlace puede utilizarlo para acceder al partido según su visibilidad. Compártelo únicamente con las personas invitadas y evita incluirlo en analítica, incidencias públicas o capturas de logs.
 
-Al apuntarse sin cuenta, el invitado recibe un token aleatorio. El servidor guarda su hash SHA-256; el token original se devuelve al crear la plaza. El navegador lo conserva en `localStorage`, bajo `kickoff:guest-passes`, junto a `participant_id`, `match_id` y `display_name`. Ese pase permite dar de baja la propia plaza o asociarla a una cuenta verificada mediante `claim_guest`.
+Antes de llamar a `join_guest`, el navegador genera el UUID de participante y un token aleatorio y los guarda en `localStorage`, bajo `kickoff:guest-passes`. El pase incluye `participant_id`, `guest_token`, `match_id` y `display_name`; puede incluir `invite_code` y el indicador `confirmed`. Si no puede guardar el pase, no solicita la plaza. Los reintentos reutilizan los mismos valores y la RPC devuelve la misma plaza, evitando duplicados si se pierde la respuesta.
 
-El pase identifica la plaza de ese invitado, no concede permisos de organizador. Borrar los datos del navegador o cambiar de dispositivo pierde el pase local; no prometas recuperación automática. No exportes los pases ni los registres en logs. La cancelación del partido corresponde al organizador y se valida en el servidor.
+El servidor guarda únicamente el hash SHA-256 del token. `get_match` puede validar el pase para que el invitado vuelva a su partido privado sin necesitar de nuevo la invitación. El pase también permite dar de baja la propia plaza o asociarla a una cuenta verificada mediante `claim_guest`. Una plaza pendiente de confirmación local no acredita por sí sola que se haya creado en el servidor.
+
+El pase identifica la plaza de ese invitado, no concede permisos de organizador. Borrar los datos del navegador o cambiar de dispositivo pierde el pase local; no prometas recuperación automática. No exportes los pases ni los registres en logs. El organizador o el propietario del centro pueden cancelar la reserva; la autorización se valida en el servidor. El centro consulta sus reservas privadas mediante un resumen, sin obtener acceso a la alineación ni a la invitación.
 
 ## Alta de centros y disponibilidad
 
 Registra los datos del centro desde una cuenta confirmada. Cada pista pertenece a un centro y tiene formato, capacidad y precio propios. Publica las franjas que el centro puede ofrecer realmente y comprueba el horario antes de guardarlas.
 
 Una reserva convierte una franja disponible en un partido. Las plazas libres dependen del aforo y participantes actuales; el catálogo vacío es un estado válido. No añadas inventario ficticio para presentar disponibilidad. Para comprobaciones de operación, utiliza registros reales autorizados para ese propósito y acuerda su conservación o retirada.
+
+Las reservas en curso o futuras impiden eliminar su pista o disponibilidad. Los partidos terminados conservan su historial mediante instantáneas y no bloquean la retirada posterior de la pista o del centro.
 
 ## GitHub y Vercel
 
@@ -72,7 +78,9 @@ Vincula el repositorio a un proyecto Vercel dentro del equipo elegido. Ajustes d
 | Output directory | `dist` |
 | Root directory | raíz del repositorio |
 
-Configura `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` y `VITE_PHONE_AUTH_ENABLED` por separado para producción y previsualización. Usa un proyecto de datos separado para previsualizaciones cuando vayas a modificar registros. Desplegar sin las variables de Supabase publica la interfaz con la operativa pendiente de configuración.
+Configura `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` y `VITE_PHONE_AUTH_ENABLED` por separado para producción y previsualización cuando el equipo permita administrar variables. La API de Vercel devolvió HTTP 403 al intentar configurarlas durante la instalación; por eso el código incluye la conexión pública de producción en `src/config.public.ts`. Esta alternativa requiere publicar una nueva compilación y no introduce credenciales privilegiadas.
+
+Las previsualizaciones sin variables de conexión propias también utilizan ese proyecto de producción. Configura ambas variables con un proyecto separado antes de utilizarlas para modificar registros. El acceso telefónico sigue desactivado salvo que `VITE_PHONE_AUTH_ENABLED=true` se establezca expresamente.
 
 Vercel puede proteger nuevos proyectos por defecto. La protección estándar mantiene públicos los dominios de producción y protege las URL de previsualización y despliegue; verifica el dominio público sin una sesión Vercel. El ajuste `publicSource` controla la exposición del código y logs, no el acceso público a la aplicación. [Protección de despliegues de Vercel](https://vercel.com/docs/deployment-protection).
 
@@ -86,9 +94,9 @@ Estas comprobaciones son una guía operativa, no resultados ya ejecutados:
 - Registro, confirmación y acceso con una dirección real; SMTP entrega fuera del equipo si el registro va a ser público.
 - Propietario puede gestionar sus centros y pistas; otra cuenta no puede cambiarlos.
 - Dos solicitudes concurrentes no pueden reservar la misma franja ni superar el aforo del partido.
-- Un partido público con plazas se encuentra; un partido privado requiere su invitación.
-- Un invitado puede apuntarse sin cuenta, salir con su pase y asociar su plaza tras verificar una cuenta.
-- Solo el organizador obtiene la invitación y cancela el partido.
+- Un partido público con plazas se encuentra; el acceso inicial de un invitado a un partido privado requiere su invitación.
+- Un invitado puede apuntarse sin cuenta, volver con el pase guardado, salir y asociar su plaza tras verificar una cuenta. Reintentar una solicitud con el mismo pase no duplica la plaza.
+- Solo el organizador obtiene la invitación; el organizador o el propietario del centro pueden cancelar la reserva. El centro ve un resumen de su reserva privada sin acceder a la alineación.
 - Si se anuncia OTP telefónico, envío y verificación real funcionan con el proveedor configurado.
 - La URL de producción responde públicamente y utiliza el commit y entorno previstos.
 
@@ -96,15 +104,20 @@ Antes de cada publicación, ejecuta `git diff --check` y `npm run build`. Revisa
 
 ## Registro de publicación
 
-Completa esta tabla solo con evidencia del entorno. Los valores pendientes no acreditan configuración ni publicación.
+Instantánea de publicación del 20 de octubre de 2026. La respuesta HTTP acredita que la interfaz está publicada; la operativa de autenticación y reservas requiere comprobación independiente. Los elementos pendientes no acreditan configuración ni funcionamiento.
 
 | Elemento | Valor verificado |
 | --- | --- |
-| Repositorio GitHub | `<REPO_URL_PENDING>` |
-| Equipo y proyecto Vercel | `<VERCEL_PROJECT_PENDING>` |
-| URL de producción | `<PRODUCTION_URL_PENDING>` |
-| Commit de producción | `<PRODUCTION_COMMIT_PENDING>` |
-| Proyecto Supabase | `<SUPABASE_PROJECT_PENDING>` |
-| Instalación de esquema | Pendiente de registrar ejecución y resultado. |
+| Repositorio GitHub | [alvarovillalbaa/kickoff](https://github.com/alvarovillalbaa/kickoff), público; ID `1426175803`; rama `main`. |
+| Equipo y proyecto Vercel | Clous Team / `kickoff-football`; ID `prj_Of9uoX3b8Hb7iGa1gRpLjAimyAPi`. |
+| URL de producción | [kickoff-football-seven.vercel.app](https://kickoff-football-seven.vercel.app); despliegue `READY`; petición HEAD sin autenticación devuelve HTTP 200. |
+| Commit de producción | `7e613a3530d9a0f253682055abd3801cc7872a4c`, publicado en `main` y desplegado en producción. |
+| Proyecto Supabase | Kickoff / `lucbdtdsofnybynjpdbp`; organización Clous; región `eu-central-1`; creación autorizada con coste cotizado de 0 USD/mes. |
+| Instalación de esquema | `supabase/schema.sql` ejecutado correctamente mediante `execute_sql`; transacción completada. |
+| Catálogo de datos | `public.browse()` consultado por REST anónimo con la clave publicable real; `centers`, `fields`, `slots` y `matches` devuelven `[]`. |
+| Permisos de datos | RLS habilitado en las 6 tablas; ningún permiso de tabla privada para `anon`, `authenticated` o `PUBLIC`. Avisos de seguridad: 3 informativos por RLS sin políticas en tablas privadas accesibles solo por RPC. |
+| Configuración pública | API de variables Vercel rechazada con HTTP 403. Conexión pública añadida al código; publicación de esa compilación pendiente. |
+| Supabase Auth | Correo habilitado y altas permitidas; confirmación de correo obligatoria; proveedor telefónico desactivado. Site URL y Redirect URLs pendientes de configurar en el panel. |
 | Correo SMTP | Pendiente de configurar y verificar entrega. |
 | OTP SMS | Desactivado por defecto; pendiente de proveedor y verificación. |
+| Prueba de usuarios y reservas | Pendiente; sin comprobación de alta, reserva, invitación ni concurrencia en el entorno publicado. |

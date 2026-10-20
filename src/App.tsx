@@ -89,6 +89,8 @@ export default function App() {
   const [format, setFormat] = useState("all");
   const [date, setDate] = useState("");
   const [route, setRoute] = useState(getRoute);
+  const currentRoute = useRef(route);
+  currentRoute.current = route;
   const [detail, setDetail] = useState<MatchDetail | null>(null);
   const [detailError, setDetailError] = useState("");
   const [detailLoading, setDetailLoading] = useState(false);
@@ -173,7 +175,12 @@ export default function App() {
     if (view === "mine") void loadMine();
   }, [view, loadMine]);
   useEffect(() => {
-    const pop = () => setRoute(getRoute());
+    const pop = () => {
+      ++detailRequest.current;
+      setDetail(null);
+      setDetailLoading(true);
+      setRoute(getRoute());
+    };
     window.addEventListener("popstate", pop);
     return () => window.removeEventListener("popstate", pop);
   }, []);
@@ -255,7 +262,12 @@ export default function App() {
   }
   async function changed() {
     await Promise.all([load(), loadMine()]);
-    if (route.id) await loadDetail();
+    if (
+      route.id &&
+      currentRoute.current.id === route.id &&
+      currentRoute.current.invite === route.invite
+    )
+      await loadDetail();
   }
   async function signOut() {
     const { error: signOutError } = await supabase!.auth.signOut();
@@ -1573,6 +1585,11 @@ function MatchPanel({
             <Check size={18} />
             Tu plaza está confirmada.
           </div>
+          {validGuest && !userId && (
+            <button className="secondary-button" onClick={onAuth}>
+              Guardar mi plaza con una cuenta <ArrowRight size={17} />
+            </button>
+          )}
           {validGuest && userId && (
             <button
               className="secondary-button"

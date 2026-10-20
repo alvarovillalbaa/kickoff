@@ -1,7 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
+import { publicConfig } from "../config.public";
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const url = import.meta.env.VITE_SUPABASE_URL || publicConfig.supabaseUrl;
+const key =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  publicConfig.supabasePublishableKey;
 export const supabase = url && key ? createClient(url, key) : null;
 export const phoneAuthEnabled =
   import.meta.env.VITE_PHONE_AUTH_ENABLED === "true";
