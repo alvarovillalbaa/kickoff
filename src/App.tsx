@@ -201,7 +201,29 @@ export default function App() {
         p_participant_id: pass?.participant_id ?? null,
         p_guest_token: pass?.guest_token ?? null,
       });
-      if (request === detailRequest.current) setDetail(data);
+      if (request === detailRequest.current) {
+        setDetail(data);
+        if (
+          pass &&
+          pass.confirmed === false &&
+          data.participants.some(
+            (p) => p.id === pass.participant_id && p.is_guest && p.is_me,
+          )
+        ) {
+          const recovered = guestPasses.current.map((p) =>
+            p.participant_id === pass.participant_id
+              ? { ...p, confirmed: true }
+              : p,
+          );
+          guestPasses.current = recovered;
+          setGuests(recovered);
+          try {
+            localStorage.setItem(guestKey, JSON.stringify(recovered));
+          } catch {
+            /* The server already confirmed the existing seat. */
+          }
+        }
+      }
     } catch (e) {
       if (request === detailRequest.current) setDetailError(errorText(e));
     } finally {
@@ -1579,12 +1601,14 @@ function MatchPanel({
             </button>
           </div>
         ))}
-      {joined && !organizer && !started && match.status === "scheduled" && (
+      {joined && !organizer && (
         <div className="joined-actions">
-          <div className="notice success">
-            <Check size={18} />
-            Tu plaza está confirmada.
-          </div>
+          {!started && match.status === "scheduled" && (
+            <div className="notice success">
+              <Check size={18} />
+              Tu plaza está confirmada.
+            </div>
+          )}
           {validGuest && !userId && (
             <button className="secondary-button" onClick={onAuth}>
               Guardar mi plaza con una cuenta <ArrowRight size={17} />
@@ -1609,25 +1633,27 @@ function MatchPanel({
               Guardar esta plaza en mi cuenta
             </button>
           )}
-          <button
-            className="text-button danger-text"
-            disabled={busy}
-            onClick={() =>
-              action(async () => {
-                if (validGuest) {
-                  await rpc("leave_guest", {
-                    p_participant_id: validGuest.participant_id,
-                    p_guest_token: validGuest.guest_token,
-                  });
-                  onRemoveGuest(validGuest.participant_id);
-                } else await rpc("leave_match", { p_match_id: match.id });
-                onToast("Has dejado libre tu plaza.");
-                await onChange();
-              })
-            }
-          >
-            No podré ir · Dejar mi plaza
-          </button>
+          {!started && match.status === "scheduled" && (
+            <button
+              className="text-button danger-text"
+              disabled={busy}
+              onClick={() =>
+                action(async () => {
+                  if (validGuest) {
+                    await rpc("leave_guest", {
+                      p_participant_id: validGuest.participant_id,
+                      p_guest_token: validGuest.guest_token,
+                    });
+                    onRemoveGuest(validGuest.participant_id);
+                  } else await rpc("leave_match", { p_match_id: match.id });
+                  onToast("Has dejado libre tu plaza.");
+                  await onChange();
+                })
+              }
+            >
+              No podré ir · Dejar mi plaza
+            </button>
+          )}
         </div>
       )}
       {organizer &&

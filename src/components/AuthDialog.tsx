@@ -61,7 +61,6 @@ export function AuthDialog({ onClose, onSuccess }: Props) {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const dialog = dialogRef.current;
-    dialog?.querySelector<HTMLElement>("input, button")?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeRef.current();
       if (event.key !== "Tab" || !dialog) return;
@@ -72,6 +71,16 @@ export function AuthDialog({ onClose, onSuccess }: Props) {
       ).filter((item) => item.getClientRects().length > 0);
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
+      if (!first) {
+        event.preventDefault();
+        dialog.querySelector<HTMLElement>("h2")?.focus();
+        return;
+      }
+      if (!focusable.includes(document.activeElement as HTMLElement)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first)?.focus();
+        return;
+      }
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last?.focus();
@@ -87,6 +96,14 @@ export function AuthDialog({ onClose, onSuccess }: Props) {
       previousFocus?.focus();
     };
   }, []);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const target =
+      dialog?.querySelector<HTMLElement>("input:not(:disabled)") ??
+      dialog?.querySelector<HTMLElement>("h2");
+    target?.focus();
+  }, [mode, sentPhone]);
 
   function changeMode(next: Mode) {
     setMode(next);
@@ -207,7 +224,9 @@ export function AuthDialog({ onClose, onSuccess }: Props) {
             <X size={22} />
           </button>
         </div>
-        <h2 id={titleId}>{heading}</h2>
+        <h2 id={titleId} tabIndex={-1}>
+          {heading}
+        </h2>
         <p className="muted">
           {mode === "reset"
             ? "Te enviaremos un enlace para elegir una nueva contraseña."
