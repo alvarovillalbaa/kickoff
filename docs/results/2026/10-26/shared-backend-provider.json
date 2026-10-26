@@ -65,7 +65,30 @@
     }
   ],
   "auth_callbacks_configured": true,
-  "old_project_paused": false,
+  "old_project_paused": true,
+  "retirement": {
+    "owner_approved": true,
+    "pre_pause_readback": {
+      "auth_accounts": 0,
+      "application_tables": {
+        "centers": 0,
+        "fields": 0,
+        "slots": 0,
+        "matches": 0,
+        "participants": 0,
+        "invitations": 0
+      },
+      "source": "Execution owner's final provider check after public browser acceptance and before the pause request."
+    },
+    "initial_pause_response_status": "PAUSING",
+    "final_readback_source": "Independent Supabase list_projects read after the owner-authorized pause.",
+    "old_project_status": "INACTIVE",
+    "active_projects_after": [
+      { "id": "wosqlzijmyiemueoittw", "name": "Still", "status": "ACTIVE_HEALTHY", "region": "eu-central-1" },
+      { "id": "faftywddybmgamvseibe", "name": "Welyto", "status": "ACTIVE_HEALTHY", "region": "eu-central-1" }
+    ],
+    "active_project_count_after": 2
+  },
   "notes": [
     "Existing Still advisor warnings are unchanged; three INFO findings describe Kickoff private tables intentionally accessible only through checked RPCs.",
     "The rollback-only PostgreSQL suite passed 28 named groups; this is not SMTP, Auth HTTP, MCP transport or concurrency proof.",
