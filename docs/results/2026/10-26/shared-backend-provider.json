@@ -64,7 +64,7 @@
       "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable"
     }
   ],
-  "auth_callbacks_configured": false,
+  "auth_callbacks_configured": true,
   "old_project_paused": false,
   "notes": [
     "Existing Still advisor warnings are unchanged; three INFO findings describe Kickoff private tables intentionally accessible only through checked RPCs.",
