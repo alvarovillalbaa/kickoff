@@ -4,7 +4,7 @@ Una aplicación en español para encontrar partidos con plazas libres, reservar 
 
 React y Vite sirven la interfaz. Supabase proporciona autenticación y Postgres; las políticas RLS y las funciones de base de datos controlan propietarios, reservas, aforo e invitaciones. El catálogo comienza vacío: los centros, pistas, horarios y partidos se añaden con datos reales desde la aplicación.
 
-El código está publicado en [GitHub](https://github.com/alvarovillalbaa/kickoff) y la interfaz en [kickoff-football-seven.vercel.app](https://kickoff-football-seven.vercel.app), con la conexión pública a Supabase incorporada. Supabase tiene el esquema instalado y su catálogo anónimo devuelve las cuatro colecciones vacías. Quedan por comprobar la configuración de correo y los recorridos de registro, reserva e invitación con una cuenta real confirmada. El OTP telefónico es opcional y permanece desactivado. Consulta el estado detallado en [el registro de publicación](docs/operations.md#registro-de-publicación).
+El código está publicado en [GitHub](https://github.com/alvarovillalbaa/kickoff) y la interfaz en [kickoff-football-seven.vercel.app](https://kickoff-football-seven.vercel.app). La consolidación aprobada el 26 de octubre de 2026 configura Kickoff para compartir el proyecto Supabase de Still (`wosqlzijmyiemueoittw`), con tablas y permisos propios. La cuenta y contraseña sirven en ambas aplicaciones y se mantiene la confirmación de correo. El estado de instalación, publicación, comprobaciones y retirada del backend anterior se registra en [el recibo de consolidación](docs/results/2026/10-26/shared-backend.md); modificar el código no demuestra que el cambio esté desplegado. El OTP telefónico sigue desactivado y la entrega de correo público necesita verificación independiente.
 
 ## Arranque local
 
@@ -40,7 +40,7 @@ npm run preview
 
 ## Preparar datos reales
 
-1. Instala [supabase/schema.sql](supabase/schema.sql) en un proyecto nuevo y configura Supabase Auth.
+1. Prepara el esquema y la conexión según [la guía de operaciones](docs/operations.md#instalación-y-propiedad-del-backend). La instalación compartida de producción requiere su migración revisada; no vuelvas a ejecutar el esquema inicial sobre una instalación existente.
 2. Crea y confirma tu cuenta de correo.
 3. Registra tu centro y sus pistas, con precio, formato y capacidad.
 4. Publica franjas de disponibilidad para cada pista.

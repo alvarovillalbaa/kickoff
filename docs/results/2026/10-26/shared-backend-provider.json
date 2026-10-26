@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-26",
+  "target_project": "wosqlzijmyiemueoittw",
+  "old_kickoff_project": "lucbdtdsofnybynjpdbp",
+  "owner_approval": "Free consolidation and focused checks explicitly approved; confirmed email replaces Still's deferred instant-signup policy.",
+  "migration": {
+    "name": "consolidate_kickoff_free_project",
+    "remote_version": "20261026183151",
+    "file": "supabase/migrations/20261026183151_consolidate_kickoff_free_project.sql",
+    "canonical_schema_sha256": "83c6a716f3c6f69173d41c3e8673b7552b6d118ec24c191b5b3946e986345da1",
+    "applied": true
+  },
+  "preflight": {
+    "target_auth_accounts": 0,
+    "target_documents": 0,
+    "target_mcp_tokens": 0,
+    "old_auth_accounts": 0,
+    "old_application_tables_all_empty": true,
+    "no_private_object_collision": true
+  },
+  "still_existing_grants_policies_function_definitions_and_acls_unchanged": true,
+  "after_test_counts": {
+    "auth_accounts": 0,
+    "documents": 0,
+    "mcp_tokens": 0,
+    "centers": 0,
+    "fields": 0,
+    "slots": 0,
+    "matches": 0,
+    "participants": 0,
+    "invitations": 0
+  },
+  "advisors_before": [
+    {
+      "name": "anon_security_definer_function_executable",
+      "level": "WARN",
+      "count": 1,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable"
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "level": "WARN",
+      "count": 2,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable"
+    }
+  ],
+  "advisors_after": [
+    {
+      "name": "rls_enabled_no_policy",
+      "level": "INFO",
+      "count": 3,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy"
+    },
+    {
+      "name": "anon_security_definer_function_executable",
+      "level": "WARN",
+      "count": 1,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable"
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "level": "WARN",
+      "count": 2,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable"
+    }
+  ],
+  "auth_callbacks_configured": false,
+  "old_project_paused": false,
+  "notes": [
+    "Existing Still advisor warnings are unchanged; three INFO findings describe Kickoff private tables intentionally accessible only through checked RPCs.",
+    "The rollback-only PostgreSQL suite passed 28 named groups; this is not SMTP, Auth HTTP, MCP transport or concurrency proof.",
+    "Vercel connector denied environment metadata with HTTP403; no CLI executable was available. Verify the deployed public bundle's effective backend rather than assuming environment overrides are absent."
+  ]
+}

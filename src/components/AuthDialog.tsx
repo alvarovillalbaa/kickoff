@@ -25,7 +25,7 @@ function authError(error: unknown) {
   if (/email not confirmed/i.test(message))
     return "Confirma tu correo con el enlace que te enviamos antes de entrar.";
   if (/already registered|already been registered/i.test(message))
-    return "Este correo ya tiene una cuenta. Prueba a iniciar sesión.";
+    return "Este correo ya tiene una cuenta en Kickoff o Still. Entra con tu contraseña.";
   if (/rate limit|too many requests|over_email_send_rate_limit/i.test(message))
     return "Has hecho varios intentos. Espera unos minutos y vuelve a probar.";
   if (/token.*expired|invalid.*token|otp.*expired/i.test(message))
@@ -214,7 +214,7 @@ export function AuthDialog({ onClose, onSuccess }: Props) {
         ref={dialogRef}
       >
         <div className="dialog-heading">
-          <span className="eyebrow">TU CUENTA KICKOFF</span>
+          <span className="eyebrow">TU CUENTA KICKOFF Y STILL</span>
           <button
             type="button"
             className="icon-button"
@@ -229,8 +229,12 @@ export function AuthDialog({ onClose, onSuccess }: Props) {
         </h2>
         <p className="muted">
           {mode === "reset"
-            ? "Te enviaremos un enlace para elegir una nueva contraseña."
-            : "Reserva tu pista, reúne a tu equipo y sal a jugar."}
+            ? "Cambiarás la contraseña que usas en Kickoff y Still."
+            : mode === "signup"
+              ? "Una cuenta para Kickoff y Still. Confirma tu correo para empezar."
+              : mode === "signin"
+                ? "Si ya usas Still, entra con el mismo correo y contraseña."
+                : "Reserva tu pista, reúne a tu equipo y sal a jugar."}
         </p>
 
         {mode !== "reset" && (

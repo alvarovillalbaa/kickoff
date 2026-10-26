@@ -292,7 +292,7 @@ export default function App() {
       await loadDetail();
   }
   async function signOut() {
-    const { error: signOutError } = await supabase!.auth.signOut();
+    const { error: signOutError } = await supabase!.auth.signOut({ scope: "local" });
     if (signOutError) {
       setToast(signOutError.message);
       return;
