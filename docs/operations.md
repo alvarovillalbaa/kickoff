@@ -1,5 +1,22 @@
 # Operación de Kickoff
 
+## Estado operativo — 14 de noviembre de 2026
+
+Se ha reanudado el proyecto compartido de Still, `wosqlzijmyiemueoittw`, desde
+`INACTIVE` hasta `ACTIVE_HEALTHY`, conservando el plan gratuito de Clous.
+Es el único proyecto cuyo estado cambió; el backend retirado de Kickoff sigue
+inactivo. El bundle público de Kickoff conserva únicamente ese destino aprobado.
+La consulta anónima y de solo lectura a `public.browse()` vuelve a responder200:
+el catálogo contiene cero centros, pistas, franjas y partidos. Still también
+responde200 en su endpoint de salud. No se añadió inventario ficticio.
+
+La confirmación de correo sigue siendo obligatoria. Still conserva la entrega
+verificada y la recuperación desactivadas. La reanudación no acredita entrega
+SMTP, alta real, sesiones confirmadas, reservas ni concurrencia; tampoco cambia
+el esquema, los permisos o la configuración publicada de las aplicaciones.
+El [recibo canónico de Still](https://github.com/alvarovillalbaa/still-markdown/blob/e62f48bcd4eb3f52449c52b2a7fc532cd942a70a/docs/results/2026/11-14/shared-backend-restoration.md)
+conserva las respuestas anteriores, de arranque y saludables, y sus límites.
+
 ## Arquitectura y límites
 
 La aplicación es una SPA de React compilada con Vite. El navegador usa la URL y clave publicable de Supabase; Supabase Auth administra las identidades y sesiones. Postgres es la fuente de verdad de centros, pistas, disponibilidad, partidos y participantes.
