@@ -1,5 +1,9 @@
 # Kickoff
 
+<!-- project-family:start -->
+> **Project family:** [Web & Creative Apps](https://github.com/alvarovillalbaa#web-and-creative-apps) · **Area:** Sports
+<!-- project-family:end -->
+
 Una aplicación en español para encontrar partidos con plazas libres, reservar una pista y organizar quién juega. Los centros deportivos registran sus pistas y publican horarios; cada reserva crea un partido al que pueden unirse usuarios con cuenta o invitados.
 
 React y Vite sirven la interfaz. Supabase proporciona autenticación y Postgres; las políticas RLS y las funciones de base de datos controlan propietarios, reservas, aforo e invitaciones. El catálogo comienza vacío: los centros, pistas, horarios y partidos se añaden con datos reales desde la aplicación.
